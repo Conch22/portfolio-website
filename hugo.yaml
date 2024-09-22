@@ -121,7 +121,7 @@ params:
     enable: true
     intro: "Hi, my name is"
     title: "Anish Khot."
-    subtitle: "Designer. Builder. Engineer"
+    # subtitle: "Designer. Builder. Engineer"
     # I’m a mechanical engineering student at Case Western Reserve University. I’ve worked on and designed just about everything – from self-playing guitars to off-road race cars. Check out my work below!
     content: "I've worked on and designed just about everything - from prosthetics and surgical devices to woodworking and off-road race cars. Check out my work below!"
     image: /img/poster.jpg
