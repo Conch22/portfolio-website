@@ -15,7 +15,8 @@ galleryImages:
  - src: /img/MOTO/LMF00810.jpg
  - src: /img/MOTO/LMF00886.jpg
  - src: /img/MOTO/LMF01528.png
- - src: /img/MOTO/IMG_0525.JPG
+#  - src: /img/MOTO/IMG_0525.JPG
+ - src: /img/MOTO/trailerincali.jpg
 #  - src: /img/MOTO/IMG_0530.JPG
 #  - src: /img/MOTO/IMG_0531.JPG
 #  - src: /img/MOTO/IMG_0615.JPG
