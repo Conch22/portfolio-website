@@ -28,7 +28,8 @@ galleryImages:
 #  - src: /img/MOTO/IMG_0623.jpg
  - src: /img/MOTO/IMG_3398.jpg
  - src: /img/MOTO/IMG_8596.jpg
- - src: /img/MOTO/IMG_8290.jpg
+#  - src: /img/MOTO/IMG_8290.jpg
+ - src: /img/MOTO/LMF00949.JPG
  - src: /img/MOTO/IMG_4309.jpg
  - src: /img/MOTO/lightroom-9782.png
  - src: /img/MOTO/LMF00772.jpg
