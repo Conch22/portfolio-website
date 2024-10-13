@@ -356,10 +356,10 @@ params:
       disableFeaturedImage: false
     socialNetworks:
       # github: https://github.com
-      linkedin: https://www.linkedin.com/in/anishkhot/
-      twitter: https://twitter.com
-      instagram: https://instagram.com
-      facebook: https://facebook.com
+      # linkedin: https://www.linkedin.com/in/anishkhot/
+      # twitter: https://twitter.com
+      # instagram: https://instagram.com
+      # facebook: https://facebook.com
 
   # List pages like blogs and posts
   listPages:
