@@ -17,7 +17,7 @@ galleryImages:
 #  - src: /img/MOTO/IMG_0615.JPG
  - src: /img/MOTO/IMG_2241.JPG
 #  - src: /img/MOTO/LMF09535.JPG
- - src: /img/MOTO/LMF09536.JPG
+ - src: /img/MOTO/LMF09537.JPG
  - src: /img/MOTO/IMG_8644.JPG
  - src: /img/MOTO/IMG_0055.jpg
  - src: /img/MOTO/LMF01381.JPG
