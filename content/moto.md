@@ -11,6 +11,10 @@ tags:
 layout: "gallery"
 galleryImages:
  - src: /img/MOTO/C0065.00_04_09_03.Still003.JPG
+ - src: /img/MOTO/LMF00772.jpg
+ - src: /img/MOTO/LMF00810.jpg
+ - src: /img/MOTO/LMF00886.jpg
+ - src: /img/MOTO/LMF01528.png
  - src: /img/MOTO/IMG_0525.JPG
 #  - src: /img/MOTO/IMG_0530.JPG
 #  - src: /img/MOTO/IMG_0531.JPG
@@ -32,10 +36,6 @@ galleryImages:
  - src: /img/MOTO/LMF00949.JPG
  - src: /img/MOTO/IMG_4309.jpg
  - src: /img/MOTO/lightroom-9782.png
- - src: /img/MOTO/LMF00772.jpg
- - src: /img/MOTO/LMF00810.jpg
- - src: /img/MOTO/LMF00886.jpg
- - src: /img/MOTO/LMF01528.png
 #  - src: /img/MOTO/LMF09303.JPG
 #  - src: /img/MOTO/LMF09303.JPG
 #  - src: /img/MOTO/LMF09303.JPG
