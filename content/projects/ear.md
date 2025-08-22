@@ -41,7 +41,7 @@ We decided to print the first prototypes in ABS, as it satisfied the durability 
 
 
 ## EBME 380 - Second Iteration
-To iterate upon our previous work, we decided to revamp our system architecture to 
+To iterate upon our previous work, we decided to revamp our system architecture by enableing
 {{< figure src="/img/EAR/ear_design_2.jpg">}}
 {{< figure src="/img/EAR/ear3.jpg">}}
 <!-- {{< figure src="/img/EAR/ear4.jpg">}} -->
