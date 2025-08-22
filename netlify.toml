@@ -1,12 +1,8 @@
-@'
 [build]
-command = "npm ci && hugo --gc --minify"
+command = "hugo --gc --minify"
 publish = "public"
 
 [build.environment]
-HUGO_VERSION = "0.121.2"    # match your local if possible
-NODE_VERSION = "20"
+HUGO_VERSION = "0.121.2"
 HUGO_ENV = "production"
 HUGO_ENABLEGITINFO = "true"
-GIT_SUBMODULE_STRATEGY = "recursive"
-'@ | Set-Content -Encoding UTF8 netlify.toml
