@@ -10,6 +10,15 @@ tags:
   - Cars
 layout: "gallery"
 galleryImages:
+#  - src: /img/MOTO/4kBlack.jpg
+ - src: /img/MOTO/IMG_0149.JPEG
+ - src: /img/MOTO/IMG_0814.PNG
+ - src: /img/MOTO/IMG_1123.jpg
+ - src: /img/MOTO/IMG_1127.jpg
+ - src: /img/MOTO/IMG_1360.JPEG
+ - src: /img/MOTO/MGKJ3914.JPEG
+ - src: /img/MOTO/P5049266.JPG
+
  - src: /img/MOTO/C0065.00_04_09_03.Still003.JPG
  - src: /img/MOTO/LMF00772.jpg
  - src: /img/MOTO/LMF00810.jpg
@@ -34,7 +43,7 @@ galleryImages:
  - src: /img/MOTO/IMG_3398.jpg
  - src: /img/MOTO/IMG_8596.jpg
 #  - src: /img/MOTO/IMG_8290.jpg
- - src: /img/MOTO/LMF00949.JPG
+ - src: /img/MOTO/LMF00949.jpg
  - src: /img/MOTO/IMG_4309.jpg
  - src: /img/MOTO/lightroom-9782.png
 #  - src: /img/MOTO/LMF09303.JPG

@@ -17,13 +17,14 @@ galleryImages:
  - src: /img/Woodwork/AA040591-1E0C-4863-90CA-6A34B0AA4E5B.JPG
  - src: /img/Woodwork/IMG_7928.jpg
  - src: /img/Woodwork/IMG_7929.jpg
- - src: /img/Woodwork/IMG_7930.jpg
+#  - src: /img/Woodwork/IMG_7930.jpg
  - src: /img/Woodwork/IMG_0086.jpg
- - src: /img/Woodwork/IMG_0087.jpg
- - src: /img/Woodwork/IMG_0065.jpg
+#  - src: /img/Woodwork/IMG_0087.jpg
+#  - src: /img/Woodwork/ramp.jpg
+#  - src: /img/Woodwork/IMG_0065.jpg
  - src: /img/Woodwork/IMG_8562.jpg
  - src: /img/Woodwork/IMG_0066.jpg
- - src: /img/Woodwork/ramp.jpg
+ 
 #  - src: /img/Woodwork/
 #  - src: /img/Woodwork/
 #  - src: /img/Woodwork/

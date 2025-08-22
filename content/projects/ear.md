@@ -1,20 +1,23 @@
 ---
-title: "EBME 370 - Unobtrusive Ear-EEG for Long-Term Seizure Monitoring"
-date: 2024-05-31
+title: "EBME 370/380 - Unobtrusive Ear-EEG for Long-Term Seizure Monitoring"
+date: 2025-05-31
 draft: false
 # author: "Gurusabarish"
 tags:
   - Arduino
   - SOLIDWORKS
+  - Machine Learning
 image: /img/EAR/overall.jpg
 description: ""
 toc: 
 --- 
+
+## EBME 370 - First Iteration
 As a part of my senior project, my group designed a unobtrusive and discreet device that allows individuals with temporal lobe epilepsy (TLE) to passively collect EEG data and store it to and SD card. This device could allow for more accurate assessments, so clinicians can more effectively manage patient conditions, prescribe medication, and detect TLE events.​
 
 We considered a total of 43 functional specifications pertaining to the device components and their composition, and realized measurable technical specifications from there. Of those specifications, we emphasized discreetness, durability, user comfort, obstructiveness, and ease of use.
 
-## The device can be split into 3 sections:
+### The device was initally split into 3 sections:
   1. Ear Piece
   2. Machine Learning Algorithm
   3. Electronic Components
@@ -35,3 +38,12 @@ After researching anthromophoric dimensions of ear lobes and mastoid bone, as we
 We decided to print the first prototypes in ABS, as it satisfied the durability constraints we set while also being biocompatible. Later on we switched to PETG because it was researched to be a better material for devices coming into contact with the skin and bodily fluids. We also experimented with painting the casings in different skin toned coatings to make it more discrete.
 
 {{< figure src="/img/EAR/jay.jpg">}}
+
+
+## EBME 380 - Second Iteration
+To iterate upon our previous work, we decided to revamp our system architecture to 
+{{< figure src="/img/EAR/ear_design_2.jpg">}}
+{{< figure src="/img/EAR/ear3.jpg">}}
+<!-- {{< figure src="/img/EAR/ear4.jpg">}} -->
+{{< figure src="/img/EAR/overall2.jpg">}}
+{{< figure src="/img/EAR/jay2.jpg">}}

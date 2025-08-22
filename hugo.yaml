@@ -132,7 +132,7 @@ params:
     button:
       enable: true
       name: "Resume"
-      url: /img/Anish Khot - Resume (December 2024).pdf
+      url: /img/Anish Khot - Resume (August 2025).pdf
       download: true
       newPage: true
     socialLinks:
@@ -149,9 +149,9 @@ params:
     title: "About Me"
     image: "/img/profile.jpg"
     content: |-
-      I am a senior Biomedical Engineering student at Case Western Reserve University, with a focus on biomechanics. 
+      I am a graduate student studying Biomedical Innovation and Development at Georgia Institute of Technology. 
       
-      I am currently a co-op student at Innovative Delta Technology, developing surgical instruments and implants for spinal surgery. I have also been involved in neural engineering research at the APT Center, developing low-level impedance control and the mechanical structure of a powered prosthetic leg. I am also the Logistics Lead for CWRU Motorsports, where I mainly facilitate organization-wide management of our equipment, tools, and vehicles.
+      I have experience developing surgical instruments and implants for spinal surgery at Innovative Delta Technology. I have also been involved in neural engineering research at the APT Center, developing low-level impedance control and the mechanical structure of a powered prosthetic leg. I was also the Logistics Lead for CWRU Motorsports, where I mainly facilitate organization-wide management of equipment, tools, travel, vehicles, and other logistics for an design team of 80+ students.
     skills:
       enable: true
       title: "In my projects, here are a few softwares I've been working with:"
@@ -215,11 +215,16 @@ params:
           name: View our website
           url: "https://cwrumotorsports.com/"
         content: |
-          I create testing plans and procedures related to component-specific and system-wide testing requested by the subsystem leads at various CWRU Motorsports testing locations.
+          - Collaborated with executive board members to execute major team logistics, such as competitions, spending, schedule, & design.
+
+          I also create testing plans and procedures related to component-specific and system-wide testing requested by the subsystem leads at various CWRU Motorsports testing locations.
 
           Attended Events
+          - 2025 Maryland:
+          - 2025 Arizona:
+          - 2024 Michigan:
           - 2024 Williamsport:
-          - 2024 California:
+          - 2024 California: 
           - 2023 Ohio: #1 Overall, #1 Suspension & Traction, #2 Endurance, #2 Maneuverability
           - 2023 Oregon: #2 Endurance #3 Design, #4 Maneuverability, #5 Acceleration, Business Finals
           - 2023 Oshkosh: #2 Acceleration, #5 Overall
