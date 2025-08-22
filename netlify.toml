@@ -1,8 +1,17 @@
 [build]
+# Command to build your Hugo site
 command = "hugo --gc --minify"
+
+# Directory where Hugo outputs the site
 publish = "public"
 
 [build.environment]
+# Hugo version to use on Netlify
 HUGO_VERSION = "0.121.2"
+
+# Set environment to production
 HUGO_ENV = "production"
+
+# Enable git info for Hugo
 HUGO_ENABLEGITINFO = "true"
+
