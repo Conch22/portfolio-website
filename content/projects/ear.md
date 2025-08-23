@@ -17,7 +17,7 @@ As a part of my senior project, my group designed a unobtrusive and discreet dev
 
 We considered a total of 43 functional specifications pertaining to the device components and their composition, and realized measurable technical specifications from there. Of those specifications, we emphasized discreetness, durability, user comfort, obstructiveness, and ease of use.
 
-### The device was initally split into 3 sections:
+ <mark>The device was initally split into 3 sections:</mark>
   1. Ear Piece
   2. Machine Learning Algorithm
   3. Electronic Components
@@ -31,7 +31,7 @@ The design needed to fit around an average-sized ear, and also have space for el
 {{< figure src="/img/EAR/ear1.JPG">}}
 <!-- {{< figure src="/img/EAR/ear2.jpg">}} -->
 
-After researching anthromophoric dimensions of ear lobes and mastoid bone, as well as taking a survey of students in my class by measuring their mastoid bone to inform my model. The approach I took to modeling the device casing was to have the medial surface contacting the skin capture the mastoid bone and the anterior surface model the mastoid bone as is protudes from behind the ear
+After researching anthromophoric dimensions of ear lobes and mastoid bone, as well as taking a survey of students in my class by measuring their mastoid bone to inform my model. The approach I took to modeling the device casing was to have the medial surface contacting the skin capture the mastoid bone and the anterior surface model the mastoid bone as is protudes from behind the ear.
 <!-- {{< figure src="/img/EAR/IMG_0486.jpg">}} -->
 {{< figure src="/img/EAR/IMG_0488.jpg">}}
 
@@ -41,9 +41,11 @@ We decided to print the first prototypes in ABS, as it satisfied the durability 
 
 
 ## EBME 380 - Second Iteration
-To iterate upon our previous work, we decided to revamp our system architecture by enableing
+To iterate upon our previous work, we decided to revamp our system architecture by packaging the electronics subassembly inside the device casing to improve user comfortability and reduce complications due to exposed wiring along the back of the neck.
 {{< figure src="/img/EAR/ear_design_2.jpg">}}
+The device casing itself was also redesigned with the new packaging constraints for both the left and right ear lobes. Utilizing similar surfacing techniques and itterative fitment tests as was done in EBME 370. A connective band was also added to connect the two device casings and cover exposed wiring.
 {{< figure src="/img/EAR/ear3.jpg">}}
 <!-- {{< figure src="/img/EAR/ear4.jpg">}} -->
+The final design was printed using Flex PLA and the electronics were installed via the clamshell like opening that occurred when opening the device casing rather than the previously shown pocket design due to prototyping constraints.
 {{< figure src="/img/EAR/overall2.jpg">}}
 {{< figure src="/img/EAR/jay2.jpg">}}
