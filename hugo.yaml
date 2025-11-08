@@ -132,7 +132,7 @@ params:
     button:
       enable: true
       name: "Resume"
-      url: /img/Anish Khot - Resume (September 2025).pdf
+      url: /img/Anish Khot - Resume.pdf
       download: true
       newPage: true
     socialLinks:
