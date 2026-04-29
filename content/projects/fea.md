@@ -11,7 +11,7 @@ description: ""
 toc: 
 ---
 
-# Introduction
+# Overview
 
 As a part of my college curriculum, I had the chance to model the mechanical stresses that spinal implants place which integrated into the body.
 
