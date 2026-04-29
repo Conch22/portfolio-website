@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pugh Matrix Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f4f4f2; color: #1a1a1a; font-size: 14px; }
+  .page { max-width: 1280px; margin: 0 auto; padding: 28px 24px 48px; }
+  h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .subtitle { color: #666; font-size: 13px; margin-bottom: 30px; }
+  .sec-label {
+    font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+    color: #777; margin: 32px 0 12px; border-bottom: 1px solid #ddd; padding-bottom: 6px;
+  }
+  .card { background: #fff; border: 1px solid #e0e0dc; border-radius: 10px; padding: 20px 24px; margin-bottom: 18px; }
+  .card-title { font-size: 13px; font-weight: 600; color: #333; margin-bottom: 14px; }
+
+  #pwCanvas { display: block; width: 100%; }
+  #needsBarWrap { position: relative; height: 320px; width: 100%; }
+  .need-selector { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+  .need-btn {
+    font-size: 11.5px; padding: 5px 12px; border-radius: 20px;
+    border: 1.5px solid #bbb; background: #fff; color: #555;
+    cursor: pointer; transition: all .14s; user-select: none; font-family: inherit;
+  }
+  .need-btn.on { background: #1f77b4; border-color: #1f77b4; color: #fff; }
+  .need-btn:hover:not(.on) { background: #f0f0ee; border-color: #999; }
+  .min-note { font-size: 11px; color: #aaa; margin-bottom: 14px; }
+
+  .radar-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px; }
+  .radar-cell {
+    background: #fff; border: 1px solid #e0e0dc; border-radius: 8px;
+    padding: 14px 14px 10px; display: flex; flex-direction: column; align-items: center;
+  }
+  .radar-cell-title { font-size: 11px; font-weight: 700; text-align: center; margin-bottom: 6px; line-height: 1.35; }
+  .radar-cell-canvas-wrap { position: relative; width: 100%; flex: 1; min-height: 260px; }
+  .radar-cell-canvas-wrap canvas { position: absolute; top: 0; left: 0; width: 100% !important; height: 100% !important; }
+  .area-badge { font-size: 11px; color: #666; margin-top: 8px; }
+  .area-val { font-weight: 700; }
+
+  .combined-layout { display: grid; grid-template-columns: 1fr 220px; gap: 20px; align-items: start; }
+  .combined-canvas-wrap { position: relative; height: 480px; }
+  .combined-legend { padding-top: 24px; display: flex; flex-direction: column; gap: 8px; }
+  .cleg-item { display: flex; align-items: flex-start; gap: 6px; font-size: 11px; color: #333; line-height: 1.35; }
+  .cleg-swatch { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; margin-top: 1px; }
+  .cleg-area { font-weight: 700; color: #555; }
+
+  @media (max-width: 720px) {
+    .radar-grid { grid-template-columns: repeat(2, 1fr); }
+    .combined-layout { grid-template-columns: 1fr; }
+    .combined-legend { flex-direction: row; flex-wrap: wrap; padding-top: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>Pugh Matrix Dashboard</h1>
+  <p class="subtitle">Weighted Design Concept Analysis - CRT Monitor</p>
+
+  <!-- 1. PAIRWISE HEATMAP -->
+  <div class="sec-label">1 - Pair-Wise Needs Comparison Heatmap</div>
+  <div class="card">
+    <canvas id="pwCanvas" role="img" aria-label="10x10 pair-wise needs heatmap"></canvas>
+  </div>
+
+  <!-- 2. VERTICAL BAR -->
+  <div class="sec-label">2 - User Need Importance Ranking (% of Pair-Wise Total)</div>
+  <div class="card">
+    <div id="needsBarWrap">
+      <canvas id="needsBar" role="img" aria-label="Vertical bar chart of user need importance"></canvas>
+    </div>
+  </div>
+
+  <!-- 3. RADAR CHARTS -->
+  <div class="sec-label">3 - Weighted Design Concept Radar Charts</div>
+  <div class="card">
+    <div class="card-title">Select user needs to display <span style="font-weight:400;color:#aaa;font-size:11px">(min 3)</span></div>
+    <div class="need-selector" id="needSelector"></div>
+
+    <div class="radar-grid" id="radarGrid"></div>
+
+    <div class="card-title" style="margin-top:4px">All Designs Combined</div>
+    <div class="combined-layout">
+      <div class="combined-canvas-wrap">
+        <canvas id="radarCombined" role="img" aria-label="Combined radar chart of all design concepts"></canvas>
+      </div>
+      <div class="combined-legend" id="combinedLegend"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+// ══════════════════════════════════════════════
+// HARDCODED DATA
+// ══════════════════════════════════════════════
+const ALL_NEEDS = [
+  "Accurate &\nObjective","Consistent","Continuous","Quick",
+  "Non-Invasive","Patient\nComfort","Ease of Use","Inclusive\nDesign",
+  "Reusable","Cross-Contam.\nPrevention"
+];
+const NEEDS_FLAT = ALL_NEEDS.map(n => n.replace('\n',' '));
+
+const PAIRWISE = [
+  [null,   3,      3,      3,     1,     3,     3,     1,      9,     1    ],
+  [0.3333, null,   3,      3,     1,     3,     3,     1,      9,     1    ],
+  [0.3333, 0.3333, null,   3,     1,     3,     3,     1,      9,     1    ],
+  [0.3333, 0.3333, 0.3333, null,  0.333, 0.333, 0.33,  0.111,  3,     0.333],
+  [1,      1,      1,      3, null,  3,     3,     1,      9,     1    ],
+  [0.3333, 0.3333, 0.3333, 3, 0.3333,null,  0.333, 1,      3,     0.111],
+  [0.3333, 0.3333, 0.3333, 3, 0.3333,3.003, null,  3,      9,     0.333],
+  [1,      1,      1,      9, 1,     1,     0.3333,null,   9,     1    ],
+  [0.1111, 0.1111, 0.1111, 0.3333,0.1111,0.3333,0.1111,0.1111,null,  0.111],
+  [1,      1,      1,      3, 1,     9, 3, 1,      9, null ]
+];
+
+const WEIGHTS = [0.14616,0.13172,0.11729,0.02945,0.12452,0.04753,0.10664,0.13177,0.00782,0.15711];
+
+const CONCEPTS = [
+  {name:"Rotating Cam Design",  scores:[3,1,9,1,9,9,3,9,9,1]},
+  {name:"Torsion Spring Clip Design",   scores:[9,3,3,9,9,3,3,3,9,3]},
+  {name:"Cufflink Design",                  scores:[9,3,3,9,9,3,1,9,9,9]},
+  {name:"Passive Air Bladder Design",                  scores:[3,3,1,1,9,9,3,3,1,3]},
+  {name:"Puck Actuator Design",    scores:[9,3,3,9,9,9,3,9,3,9]},
+  {name:"Inflatable Glove Design",                 scores:[3,1,3,1,9,1,3,3,3,1]},
+  {name:"Inflatable Ring Design",                  scores:[3,3,3,3,9,9,3,9,9,9]},
+  {name:"Finger Sleeve Design",                         scores:[9,3,3,3,9,3,3,9,9,9]}
+];
+CONCEPTS.forEach(c => { c.weighted = c.scores.map((s,i) => s * WEIGHTS[i]); });
+
+const NEED_TOTALS = [14.616,13.172,11.729,2.945,12.452,4.753,10.664,13.177,0.782,15.711];
+const TOTAL_SUM   = NEED_TOTALS.reduce((a,b)=>a+b,0);
+const NEED_PCTS   = NEED_TOTALS.map(v => v/TOTAL_SUM*100);
+
+// Exact matplotlib tab10 colors (i/8 for 8 concepts)
+const TAB10_8 = ['#1f77b4','#ff7f0e','#2ca02c','#d62728','#8c564b','#e377c2','#7f7f7f','#bcbd22'];
+// tab10 for 10 needs (i/10 spacing)
+const TAB10_10 = ['#1f77b4','#ff7f0e','#2ca02c','#d62728','#9467bd','#8c564b','#e377c2','#7f7f7f','#bcbd22','#17becf'];
+// Purple-to-blue gradient for vertical bar (sorted by value, so we assign by rank)
+const PURPLE_BLUE_10 = ['#3f007d','#54278f','#6a51a3','#807dba','#9e9ac8','#bcbddc','#dadaeb','#4292c6','#2171b5','#084594'];
+
+// ══════════════════════════════════════════════
+// 1. PAIRWISE
+const BUPU = [
+  [247,252,253],[224,236,244],[191,211,230],[158,188,218],
+  [140,150,198],[140,107,177],[136,65,157],[129,15,124],[77,0,75]
+];
+function bupu(t) {
+  const i = Math.min(7, Math.floor(t*8));
+  const f = t*8 - i;
+  const c0=BUPU[i], c1=BUPU[Math.min(8,i+1)];
+  return `rgb(${Math.round(c0[0]+f*(c1[0]-c0[0]))},${Math.round(c0[1]+f*(c1[1]-c0[1]))},${Math.round(c0[2]+f*(c1[2]-c0[2]))})`;
+}
+
+function drawPairwiseHeatmap() {
+  const canvas = document.getElementById('pwCanvas');
+  const n = 10;
+  const W = canvas.parentElement.clientWidth - 40;
+  const margin = {top:78, right:115, bottom:22, left:155};
+  const gridW = W - margin.left - margin.right;
+  const cell  = Math.floor(gridW / n);
+  const gridH = cell * n;
+  const H = gridH + margin.top + margin.bottom;
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+
+  // Log values
+  const logV = PAIRWISE.map(row => row.map(v => v==null ? null : Math.log10(v+1e-9)));
+  const flat  = logV.flat().filter(v=>v!=null);
+  const logMin = Math.min(...flat), logMax = Math.max(...flat);
+
+  // Cells
+    for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
+        const x = margin.left + j * cell;
+        const y = margin.top + i * cell;
+
+        const v = PAIRWISE[i][j];
+
+        // Cell color (keep whatever you're using)
+        ctx.fillStyle = v == null
+      ? '#aaaaaa'
+      : bupu((logV[i][j] - logMin) / (logMax - logMin));
+        ctx.fillRect(x, y, cell - 1, cell - 1);
+
+        ctx.strokeStyle = '#111';
+        ctx.lineWidth = 0.5;
+        ctx.strokeRect(x, y, cell - 1, cell - 1);
+
+        ctx.font = 'bold 11px Segoe UI, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        if (v == null) {
+            ctx.fillStyle = '#aaaaaa';
+            ctx.fillText('—', x + cell / 2, y + cell / 2);
+        }   else {
+            // ✅ SIMPLE RULE: if value > 8 → white text
+            ctx.fillStyle = v > 8 ? '#ffffff' : '#000000';
+
+            ctx.fillText(
+                v === 1
+                    ? '1'
+                    : v.toFixed(3).replace(/0+$/, '').replace(/\.$/, ''),
+                 x + cell / 2,
+                 y + cell / 2
+            );
+        }
+    }
+    }
+
+  // X labels (rotated)
+  ctx.font='10px Segoe UI,sans-serif'; ctx.fillStyle='#000';
+  for (let j=0;j<n;j++) {
+    ctx.save();
+    ctx.translate(margin.left + j*cell + cell/2, margin.top - 8);
+    ctx.rotate(-0.48); ctx.textAlign='left'; ctx.textBaseline='middle';
+    ctx.fillText(NEEDS_FLAT[j], 0, 0); ctx.restore();
+  }
+  // Y labels
+  ctx.textAlign='right'; ctx.textBaseline='middle';
+  for (let i=0;i<n;i++)
+    ctx.fillText(NEEDS_FLAT[i], margin.left-7, margin.top+i*cell+cell/2);
+
+  // Axis labels
+  ctx.font='bold 12px Segoe UI,sans-serif'; ctx.fillStyle='#000';
+  ctx.textAlign='center'; ctx.textBaseline='top';
+  ctx.fillText('Compared Need (Column)', margin.left+gridW/2, H-14);
+  ctx.save(); ctx.translate(13, margin.top+gridH/2); ctx.rotate(-Math.PI/2);
+  ctx.textBaseline='top'; ctx.fillText('Evaluated Need (Row)', 0, 0); ctx.restore();
+
+  // Title
+  ctx.font='bold 15px Segoe UI,sans-serif'; ctx.fillStyle='#000';
+  ctx.textAlign='center'; ctx.textBaseline='top';
+  ctx.fillText('Pair-Wise Needs Comparison Heatmap', W/2, 8);
+
+  // Color bar
+  const sbX=margin.left+gridW+18, sbY=margin.top, sbH=gridH, sbW=14;
+  const grad=ctx.createLinearGradient(0,sbY,0,sbY+sbH);
+  for (let k=0;k<=20;k++) grad.addColorStop(k/20, bupu(1-k/20));
+  ctx.fillStyle=grad; ctx.fillRect(sbX,sbY,sbW,sbH);
+  ctx.strokeStyle='#aaa'; ctx.lineWidth=0.5; ctx.strokeRect(sbX,sbY,sbW,sbH);
+
+  [{v:0.111,lbl:'0.111\n(Much Less)'},{v:0.333,lbl:'0.333\n(Less)'},
+   {v:1,lbl:'1\n(Same)'},{v:3,lbl:'3\n(More)'},{v:9,lbl:'9\n(Much More)'}
+  ].forEach(({v,lbl})=>{
+    const t=1-(Math.log10(v)-logMin)/(logMax-logMin);
+    const ty=sbY+t*sbH;
+    ctx.fillStyle='#555'; ctx.fillRect(sbX-3,ty-0.5,3,1);
+    ctx.fillStyle='#000'; ctx.font='9px Segoe UI,sans-serif';
+    ctx.textAlign='left';
+    lbl.split('\n').forEach((line,li)=>ctx.fillText(line, sbX+sbW+4, ty-8+li*10));
+  });
+  ctx.save(); ctx.translate(sbX+sbW+74, sbY+sbH/2); ctx.rotate(Math.PI/2);
+  ctx.font='12px Segoe UI,sans-serif'; ctx.fillStyle='#000';
+  ctx.textAlign='center'; ctx.fillText('Relative Importance (log scale)', 0, 0); ctx.restore();
+}
+
+// ══════════════════════════════════════════════
+// 2. VERTICAL BAR — viridis, sorted desc
+// ══════════════════════════════════════════════
+function buildVerticalBar() {
+  const sorted = NEED_PCTS.map((p,i)=>({pct:p,name:NEEDS_FLAT[i]}))
+    .sort((a,b)=>b.pct-a.pct);
+  // Assign purple→blue from darkest purple (highest bar) to deepest blue (lowest bar)
+  const purpleBlue = ['#3f007d','#54278f','#6a51a3','#807dba','#9e9ac8','#bcbddc','#9ecae1','#6baed6','#2171b5','#084594'];
+  new Chart(document.getElementById('needsBar'),{
+    type:'bar',
+    data:{
+      labels: sorted.map(d=>d.name),
+      datasets:[{
+        data:            sorted.map(d=>d.pct),
+        backgroundColor: sorted.map((_,i)=>purpleBlue[i]),
+        borderColor:     sorted.map((_,i)=>purpleBlue[i]),
+        borderWidth:0, borderRadius:3
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false, animation:false,
+      scales:{
+        x:{ticks:{font:{size:10},maxRotation:20,color:'#000'},grid:{display:false}},
+        y:{
+          min:Math.min(...NEED_PCTS)*0.85, max:Math.max(...NEED_PCTS)*1.1,
+          ticks:{callback:v=>v.toFixed(1)+'%',font:{size:9},color:'#000'},
+          grid:{color:'#e8e8e8',lineWidth:0.8},
+          title:{display:true,text:'Percentage of Total (%)',font:{size:11},color:'#000'}
+        }
+      },
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.parsed.y.toFixed(2)+'%'}}}
+    },
+    plugins:[{
+      id:'barLabels',
+      afterDatasetsDraw(chart){
+        const {ctx,data,scales:{x,y}}=chart;
+        data.datasets[0].data.forEach((v,i)=>{
+          const xp=x.getPixelForValue(i), yp=y.getPixelForValue(v);
+          ctx.fillStyle='#000'; ctx.font='bold 9px Segoe UI,sans-serif';
+          ctx.textAlign='center'; ctx.textBaseline='bottom';
+          ctx.fillText(v.toFixed(1)+'%', xp, yp-2);
+        });
+      }
+    }]
+  });
+}
+
+// ══════════════════════════════════════════════
+// 3. RADAR CHARTS — tab10, white bg, black grid
+// ══════════════════════════════════════════════
+let activeNeeds=[0,1,2,4,7,9]; // default: needs 1,2,3,5,8,10 (1-indexed, v3 defaults)
+let radarInstances=[], combinedInstance=null;
+
+function radarArea(weighted, idxArr){
+  const n=idxArr.length; let area=0;
+  for(let k=0;k<n;k++){
+    const a1=k*2*Math.PI/n, a2=(k+1)*2*Math.PI/n;
+    area+=0.5*weighted[idxArr[k]]*weighted[idxArr[(k+1)%n]]*Math.abs(Math.sin(a2-a1));
+  }
+  return area;
+}
+
+function buildNeedSelector(){
+  const cont=document.getElementById('needSelector');
+  cont.innerHTML='';
+  ALL_NEEDS.forEach((n,i)=>{
+    const btn=document.createElement('button');
+    btn.className='need-btn'+(activeNeeds.includes(i)?' on':'');
+    btn.textContent=n.replace('\n',' ');
+    btn.dataset.idx=i;
+    btn.addEventListener('click',()=>{
+      const idx=+btn.dataset.idx;
+      if(activeNeeds.includes(idx)){
+        if(activeNeeds.length<=3) return;
+        activeNeeds=activeNeeds.filter(x=>x!==idx);
+        btn.classList.remove('on');
+      } else {
+        activeNeeds.push(idx); activeNeeds.sort((a,b)=>a-b);
+        btn.classList.add('on');
+      }
+      rebuildRadars();
+    });
+    cont.appendChild(btn);
+  });
+}
+
+function rebuildRadars(){
+  radarInstances.forEach(c=>c.destroy()); radarInstances=[];
+  if(combinedInstance){combinedInstance.destroy(); combinedInstance=null;}
+
+  const grid=document.getElementById('radarGrid');
+  grid.innerHTML='';
+
+  const labels   = activeNeeds.map(i=>ALL_NEEDS[i]);
+  const areas    = CONCEPTS.map(c=>radarArea(c.weighted, activeNeeds));
+  const globalMax= Math.max(...CONCEPTS.flatMap(c=>activeNeeds.map(i=>c.weighted[i])))*1.15;
+
+  CONCEPTS.forEach((concept,ci)=>{
+    const color=TAB10_8[ci%8];
+    const cell=document.createElement('div');
+    cell.className='radar-cell';
+
+    const titleDiv=document.createElement('div');
+    titleDiv.className='radar-cell-title';
+    titleDiv.style.color=color;
+    titleDiv.textContent=concept.name;
+
+    const wrap=document.createElement('div');
+    wrap.className='radar-cell-canvas-wrap';
+    const cv=document.createElement('canvas');
+    wrap.appendChild(cv);
+
+    const areaDiv=document.createElement('div');
+    areaDiv.className='area-badge';
+    areaDiv.innerHTML=`Area: <span class="area-val" style="color:${color}">${areas[ci].toFixed(5)}</span>`;
+
+    cell.append(titleDiv,wrap,areaDiv);
+    grid.appendChild(cell);
+
+    radarInstances.push(new Chart(cv,{
+      type:'radar',
+      data:{
+        labels,
+        datasets:[{
+          data:activeNeeds.map(i=>concept.weighted[i]),
+          backgroundColor:color+'26',
+          borderColor:color,
+          borderWidth:2,
+          pointBackgroundColor:color,
+          pointRadius:3
+        }]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false, animation:false,
+        scales:{r:{
+          min:0, max:globalMax,
+          backgroundColor:'#fff',
+          angleLines:{color:'#000',lineWidth:0.8},
+          grid:{color:'#000',lineWidth:0.8},
+          ticks:{font:{size:7},color:'#666666',stepSize:globalMax/4,backdropColor:'transparent'},
+          pointLabels:{font:{size:10},color:'#222222',padding:6}
+        }},
+        plugins:{legend:{display:false}}
+      }
+    }));
+  });
+
+  // Combined
+  const combCanvas=document.getElementById('radarCombined');
+  combCanvas.style.background='#fff';
+  combinedInstance=new Chart(combCanvas,{
+    type:'radar',
+    data:{
+      labels,
+      datasets:CONCEPTS.map((c,ci)=>({
+        label:c.name,
+        data:activeNeeds.map(i=>c.weighted[i]),
+        backgroundColor:TAB10_8[ci%8]+'0f',
+        borderColor:TAB10_8[ci%8],
+        borderWidth:1.8, pointRadius:2
+      }))
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false, animation:false,
+      scales:{r:{
+        min:0, max:globalMax,
+        backgroundColor:'#fff',
+        angleLines:{color:'#000',lineWidth:0.8},
+        grid:{color:'#000',lineWidth:0.8},
+        ticks:{font:{size:7.5},color:'#666666',stepSize:globalMax/4,backdropColor:'transparent'},
+        pointLabels:{font:{size:11},color:'#222222',padding:8}
+      }},
+      plugins:{legend:{display:false}}
+    }
+  });
+
+  // Legend
+  const legDiv=document.getElementById('combinedLegend');
+  legDiv.innerHTML='';
+  CONCEPTS.forEach((c,ci)=>{
+    const color=TAB10_8[ci%8];
+    const item=document.createElement('div'); item.className='cleg-item';
+    item.innerHTML=`<span class="cleg-swatch" style="background:${color}"></span>
+      <span>${c.name} <span class="cleg-area">${areas[ci].toFixed(5)}</span></span>`;
+    legDiv.appendChild(item);
+  });
+}
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+drawPairwiseHeatmap();
+buildVerticalBar();
+buildNeedSelector();
+rebuildRadars();
+
+window.addEventListener('resize',()=>{ drawPairwiseHeatmap(); });
+</script>
+</body>
+</html>
