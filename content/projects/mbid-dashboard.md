@@ -12,7 +12,9 @@ toc:
 ---
 ## Overview
 
-This dashboard visualizes user needs, concept comparisons, and design tradeoffs using a Pugh matrix framework for our MBID Phase Gate 2 Presentation.
+These dashboards help visualizes user needs, concept comparisons, and design tradeoffs using a Pugh matrix framework for our MBID Phase Gate 2 Presentation.
 
-## View the Dashboard
-<mark>[Click here to Launch the Dashboard](/projects/pugh-dashboard/)</mark>
+## View the Dashboards
+<mark>[Click here to Launch the Concept Development Dashboard](/projects/pugh-dashboard/sankey_output_toggle.html)</mark>
+
+<mark>[Click here to Launch the Detailed Design Dashboard](/projects/pugh-dashboard/index.html)</mark>
